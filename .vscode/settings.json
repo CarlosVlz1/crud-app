@@ -1,8 +1,7 @@
 {
-    "material-icon-theme.activeIconPack": "nest",
     "terminal.explorerKind": "both",
     "editor.minimap.enabled": false,
     "editor.scrollbar.vertical": "auto",
     "editor.formatOnSave": true,
-    "workbench.sideBar.location": "right"
+    "workbench.sideBar.location": "left"
 }

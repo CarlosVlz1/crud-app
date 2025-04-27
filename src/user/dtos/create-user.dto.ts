@@ -1,21 +1,4 @@
-import { IsEmail,  IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { UserRole } from "../schemas/user.schema";
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { UserDto } from './user.dto';
 
-export class CreateUserDto{
-
-    @IsNotEmpty()
-    @IsString()
-    name: string;
-
-    @IsNotEmpty()
-    lastName: string;
-
-    @IsEmail()
-    email: string;
-
-    @IsOptional()
-    phone?: string;
-
-    @IsNotEmpty()
-    role: UserRole;
-}
+export class CreateUserDto extends OmitType(UserDto, ['id'] as const) {}

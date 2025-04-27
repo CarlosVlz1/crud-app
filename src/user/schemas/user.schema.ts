@@ -2,30 +2,29 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Type } from 'class-transformer';
 import { IsString } from 'class-validator';
 
-export type UserRole = 'ADMIN' | 'COMMON_USER' | 'GUEST';
-
-@Schema({})
+@Schema({ timestamps: true })
 export class User {
   @Prop({ required: true })
-  @IsString()
   name: string;
 
-  @Prop()
-  @IsString()
+  @Prop({ required: true })
   lastName: string;
 
-  @Prop()
-  @IsString()
+  @Prop({ required: true })
   email: string;
 
   @Prop()
-  @IsString()
-  phone: string;
+  phone?: string;
 
   @Prop({ required: true })
-  @Type(() => String)
-  role: UserRole;
+  role: string;
 }
 
 // Define la creación del modelo en la base de datos
-export const userSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.index({ email: 1 }, { unique: true });
+
+UserSchema.index({ name: 1 }, { name: 'index to improve search by name' });
+
+UserSchema.index({ phone: 1 }, { name: 'index to improve search by phone' });
