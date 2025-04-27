@@ -9,7 +9,7 @@ import {
   UsePipes,
   HttpCode,
   HttpStatus,
-  Put,
+  Patch,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dtos/create-user.dto';
@@ -41,7 +41,7 @@ export class UserController {
   }
 
   //Endpoint para modificar usuarios
-  @Put('/:id')
+  @Patch('/:id')
   @HttpCode(HttpStatus.OK)
   async update(@Param('id') id: string, @Body() User: UpdateUserDto) {
     return await this.userService.update(id, User);
