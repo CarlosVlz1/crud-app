@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../schemas/user.schema';
@@ -22,7 +22,7 @@ export class UserService {
   }
 
   async update(id: string, user: UpdateUserDto): Promise<UpdateUserDto> {
-    return await this.userModel.findByIdAndUpdate(id, user, { new: true });
+    return await this.userModel.findByIdAndUpdate(id, user);
   }
 
   async deleteById(id: string) {

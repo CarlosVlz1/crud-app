@@ -1,7 +1,6 @@
 import { CreateUserDto } from 'src/user/dtos/create-user.dto';
-import { UserRole } from 'src/user/schemas/user.schema';
 
-export const userRoleMock: UserRole = 'GUEST';
+export const userRoleMock = 'GUEST';
 
 export const USER_MOCK: CreateUserDto = {
   name: 'Juan',
