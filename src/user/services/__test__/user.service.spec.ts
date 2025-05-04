@@ -1,76 +1,81 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from '../user.service';
-import { User } from './../../schemas/user.schema';
-import { Model } from 'mongoose';
-import { getModelToken } from '@nestjs/mongoose';
-import { USERS_MOCK, USER_MOCK } from '../__fixtures__/common';
-import { CreateUserDto } from 'src/user/dtos/create-user.dto';
+import { Test, TestingModule } from '@nestjs/testing'
+import { UserService } from '../user.service'
+import { User } from './../../schemas/user.schema'
+import { getModelToken } from '@nestjs/mongoose'
+import { USERS_MOCK, USER_MOCK } from '../__fixtures__/common'
+import { RequestUserDto } from 'src/user/dtos/request-user.dto'
 
+// Mock del modelo de Mongoose
 const mockUserModel = {
-  find: jest.fn().mockResolvedValue(USERS_MOCK),
-};
-const userServiceMock = {
-  findAll: jest.fn(),
-  findOne: jest.fn(),
+  find: jest.fn(),
+  findById: jest.fn(),
   create: jest.fn(),
-  update: jest.fn(),
-  deleteById: jest.fn(),
-};
+  findByIdAndUpdate: jest.fn().mockResolvedValue(USER_MOCK),
+  findByIdAndDelete: jest.fn(),
+}
 
 describe('UserService', () => {
-  let service: UserService;
-  let userModel: Model<User>;
+  let service: UserService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
       providers: [
-        { provide: UserService, useValue: userServiceMock },
+        UserService,
         { provide: getModelToken(User.name), useValue: mockUserModel },
       ],
-    })
-      .overrideProvider(getModelToken(User.name))
-      .useValue(jest.fn())
-      .compile();
+    }).compile()
 
-    service = module.get<UserService>(UserService);
-  });
+    service = module.get<UserService>(UserService)
+    jest.clearAllMocks()
+  })
 
-  it('should be define', () => {
-    expect(service).toBeDefined();
-  });
+  it('should be defined', () => {
+    expect(service).toBeDefined()
+  })
 
   describe('findAll()', () => {
     it('should find all users', async () => {
-      jest.spyOn(userServiceMock, 'findAll').mockResolvedValue(USERS_MOCK);
-      const result = await service.findAll();
-      expect(result).toMatchObject(USERS_MOCK);
-    });
-  });
+      mockUserModel.find.mockResolvedValue(USERS_MOCK)
+      const result = await service.findAll()
+      expect(result).toEqual(USERS_MOCK)
+      expect(mockUserModel.find).toHaveBeenCalled()
+      expect(mockUserModel.find).toHaveBeenCalledTimes(1)
+    })
+  })
 
   describe('findOne()', () => {
     it('should return a user by id', async () => {
-      const userId = '1';
-      jest.spyOn(service, 'findOne').mockImplementation(async (id: string) => {
-        if (id === userId) {
-          return USER_MOCK;
-        }
-        return null;
-      });
-      const result = await service.findOne(userId);
-      expect(result).toEqual(USER_MOCK);
-    });
-  });
+      const userId = '1'
+      mockUserModel.findById.mockResolvedValue(USER_MOCK)
+      const result = await service.findOne(userId)
+      expect(result).toEqual(USER_MOCK)
+      expect(mockUserModel.findById).toHaveBeenCalledWith(userId)
+    })
+  })
 
   describe('create()', () => {
     it('should create a new user', async () => {
-      jest
-        .spyOn(service, 'create')
-        .mockImplementation(async (user: CreateUserDto) => {
-          return USER_MOCK;
-        });
-      const result = await service.create(USER_MOCK);
-      expect(result).toEqual(USER_MOCK);
-    });
-  });
-});
+      mockUserModel.create.mockResolvedValue(USER_MOCK)
+      const result = await service.create(USER_MOCK)
+      expect(result).toEqual(USER_MOCK)
+      expect(mockUserModel.create).toHaveBeenCalledWith(USER_MOCK)
+    })
+  })
+
+  describe('update()', () => {
+    it('should update a user', async () => {
+      const userId = '1'
+      const userData: RequestUserDto = { ...USER_MOCK }
+      const result = await service.update(userId, userData)
+      expect(result).toEqual(USER_MOCK)
+    })
+  })
+
+  describe('deleteById()', () => {
+    it('should delete a user by id', async () => {
+      const userId = '1'
+      await service.deleteById(userId)
+      expect(mockUserModel.findByIdAndDelete).toHaveBeenCalledWith(userId)
+    })
+  })
+})
