@@ -10,24 +10,24 @@ import {
   HttpCode,
   HttpStatus,
   Patch,
-} from '@nestjs/common';
-import { UserService } from '../services/user.service';
-import { CreateUserDto } from '../dtos/create-user.dto';
-import { UpdateUserDto } from '../dtos/update-user.dto';
+  UseInterceptors,
+} from '@nestjs/common'
+import { UserService } from '../services/user.service'
+import { RequestUserDto } from '../dtos/request-user.dto'
+import { ExcludeFieldsInterceptor } from '../../common/exclude-fields.interceptor'
 
+@UseInterceptors(ExcludeFieldsInterceptor)
 @UsePipes(new ValidationPipe({ transform: true }))
 @Controller('/users')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  //Endpoint para recuperar todos los usuarios existentes
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll() {
-    return await this.userService.findAll();
+    return this.userService.findAll();
   }
 
-  // Endpoint para recuperar un user específico
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string) {
@@ -36,21 +36,19 @@ export class UserController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createUser: CreateUserDto) {
+  async create(@Body() createUser: RequestUserDto) {
     return this.userService.create(createUser);
   }
 
-  //Endpoint para modificar usuarios
   @Patch('/:id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() User: UpdateUserDto) {
-    return await this.userService.update(id, User);
+  async update(@Param('id') id: string, @Body() User: RequestUserDto) {
+    return await this.userService.update(id, User)
   }
 
-  // Endpoint para eliminar un usuario específico
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteById(@Param('id') id: string) {
-    await this.userService.deleteById(id);
+    await this.userService.deleteById(id)
   }
 }
