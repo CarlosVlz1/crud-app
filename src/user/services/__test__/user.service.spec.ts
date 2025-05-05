@@ -71,10 +71,10 @@ describe('UserService', () => {
     })
   })
 
-  describe('deleteById()', () => {
+  describe('delete()', () => {
     it('should delete a user by id', async () => {
       const userId = '1'
-      await service.deleteById(userId)
+      await service.delete(userId)
       expect(mockUserModel.findByIdAndDelete).toHaveBeenCalledWith(userId)
     })
   })
