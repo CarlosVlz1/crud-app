@@ -11,6 +11,7 @@ import {
   HttpStatus,
   Patch,
   UseInterceptors,
+  Query,
 } from '@nestjs/common'
 import { UserService } from '../services/user.service'
 import { RequestUserDto } from '../dtos/request-user.dto'
@@ -21,6 +22,12 @@ import { ExcludeFieldsInterceptor } from '../../common/exclude-fields.intercepto
 @Controller('/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get('/search')
+  @HttpCode(HttpStatus.OK)
+  async find(@Query() query: any) {
+    return this.userService.find(query)
+  }
 
   @Get()
   @HttpCode(HttpStatus.OK)
