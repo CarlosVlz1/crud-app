@@ -40,3 +40,4 @@ jobs:
           projectBaseDir: .
           args: |
             -Dsonar.projectKey=${{ secrets.SONAR_KEY }}
+            -X
