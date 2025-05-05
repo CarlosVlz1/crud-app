@@ -11,6 +11,7 @@ import {
   HttpStatus,
   Patch,
   UseInterceptors,
+  Query,
 } from '@nestjs/common'
 import { UserService } from '../services/user.service'
 import { RequestUserDto } from '../dtos/request-user.dto'
@@ -20,7 +21,13 @@ import { ExcludeFieldsInterceptor } from '../../common/exclude-fields.intercepto
 @UsePipes(new ValidationPipe({ transform: true }))
 @Controller('/users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
+
+  @Get('/search')
+  @HttpCode(HttpStatus.OK)
+  async find(@Query() query: any) {
+    return this.userService.find(query)
+  }
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -48,7 +55,7 @@ export class UserController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteById(@Param('id') id: string) {
-    await this.userService.deleteById(id)
+  async delete(@Param('id') id: string) {
+    await this.userService.delete(id)
   }
 }

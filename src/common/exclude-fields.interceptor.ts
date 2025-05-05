@@ -22,9 +22,11 @@ export class ExcludeFieldsInterceptor implements NestInterceptor {
 
   excludeFields(obj: any) {
     if (!obj) return obj
-    const { _id, __v, createdAt, updatedAt, ...rest } = obj.toObject
-      ? obj.toObject()
-      : obj
+    const plainObject = obj.toObject ? obj.toObject() : obj
+    const { _id, __v, createdAt, updatedAt, ...rest } = plainObject
+    if (rest.toObject) {
+      delete rest.toObject
+    }
     return rest
   }
 }
