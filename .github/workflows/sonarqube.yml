@@ -41,3 +41,12 @@ jobs:
           args: |
             -Dsonar.projectKey=${{ secrets.SONAR_KEY }}
             -X
+            -Dsonar.organization=Carlos Vélez
+            -Dsonar.branch.name=${{ github.ref_name }}
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/*.spec.ts,**/test/**
+            -Dsonar.tests=.
+            -Dsonar.test.inclusions=**/*.spec.ts
+            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.sourceEncoding=UTF-8
+            -X
