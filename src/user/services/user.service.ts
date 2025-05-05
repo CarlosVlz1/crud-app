@@ -17,6 +17,10 @@ export class UserService {
     return await this.userModel.findById(id)
   }
 
+ async find(query: any): Promise<ResponseUserDto[]> {
+    return await this.userModel.find(query)
+  }
+
   async create(user: RequestUserDto): Promise<ResponseUserDto> {
     return await this.userModel.create(user)
   }
