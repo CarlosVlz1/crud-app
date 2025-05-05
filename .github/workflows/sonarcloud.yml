@@ -38,6 +38,4 @@ jobs:
           SONAR_HOST_URL: https://sonarcloud.io
         with:
           projectBaseDir: .
-          args: |
-            -Dsonar.projectKey=${{ secrets.SONAR_KEY }}
-            -X
+          args: -X
