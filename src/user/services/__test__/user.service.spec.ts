@@ -53,6 +53,14 @@ describe('UserService', () => {
     })
   })
 
+  describe('find()', () => {
+    it('should find a user by query', async () => {
+      const query = { name: 'John' }
+      mockUserModel.find.mockResolvedValue(USERS_MOCK)
+      const result = await service.find(query)
+    })
+  })
+
   describe('create()', () => {
     it('should create a new user', async () => {
       mockUserModel.create.mockResolvedValue(USER_MOCK)
