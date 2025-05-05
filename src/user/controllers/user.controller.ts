@@ -20,7 +20,7 @@ import { ExcludeFieldsInterceptor } from '../../common/exclude-fields.intercepto
 @UsePipes(new ValidationPipe({ transform: true }))
 @Controller('/users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
