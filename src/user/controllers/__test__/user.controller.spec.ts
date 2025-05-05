@@ -8,7 +8,7 @@ const userServiceMock = {
   findOne: jest.fn(),
   create: jest.fn(),
   update: jest.fn(),
-  deleteById: jest.fn(),
+  delete: jest.fn(),
 };
 
 describe('UserController', () => {
@@ -55,10 +55,10 @@ describe('UserController', () => {
     });
   });
 
-  describe('deleteById', () => {
-    it('should be called deleteById of the service', () => {
-      controller.deleteById(idMock);
-      expect(userServiceMock.deleteById).toHaveBeenCalledWith(idMock);
-    });
-  });
+  describe('delete', () => {
+    it('should be called delete of the service', () => {
+      controller.delete(idMock)
+      expect(userServiceMock.delete).toHaveBeenCalledWith(idMock)
+    })
+  })
 });

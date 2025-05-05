@@ -1,6 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Type } from 'class-transformer';
-import { IsString } from 'class-validator';
 
 @Schema({ timestamps: true })
 export class User {
@@ -20,7 +18,6 @@ export class User {
   role: string;
 }
 
-// Define la creación del modelo en la base de datos
 export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.index({ email: 1 }, { unique: true });
