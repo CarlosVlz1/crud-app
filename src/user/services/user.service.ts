@@ -7,7 +7,9 @@ import { RequestUserDto } from '../dtos/request-user.dto'
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
 
   async findAll(): Promise<ResponseUserDto[]> {
     return await this.userModel.find()
@@ -17,7 +19,7 @@ export class UserService {
     return await this.userModel.findById(id)
   }
 
- async find(query: any): Promise<ResponseUserDto[]> {
+  async find(query: any): Promise<ResponseUserDto[]> {
     return await this.userModel.find(query)
   }
 

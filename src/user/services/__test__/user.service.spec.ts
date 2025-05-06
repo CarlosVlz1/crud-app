@@ -5,7 +5,6 @@ import { getModelToken } from '@nestjs/mongoose'
 import { USERS_MOCK, USER_MOCK } from '../__fixtures__/common'
 import { RequestUserDto } from 'src/user/dtos/request-user.dto'
 
-// Mock del modelo de Mongoose
 const mockUserModel = {
   find: jest.fn(),
   findById: jest.fn(),
@@ -50,6 +49,14 @@ describe('UserService', () => {
       const result = await service.findOne(userId)
       expect(result).toEqual(USER_MOCK)
       expect(mockUserModel.findById).toHaveBeenCalledWith(userId)
+    })
+  })
+
+  describe('find()', () => {
+    it('should find a user by query', async () => {
+      const query = { name: 'John' }
+      mockUserModel.find.mockResolvedValue(USERS_MOCK)
+      const result = await service.find(query)
     })
   })
 
