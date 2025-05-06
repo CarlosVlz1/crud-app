@@ -5,7 +5,6 @@ import { getModelToken } from '@nestjs/mongoose'
 import { USERS_MOCK, USER_MOCK } from '../__fixtures__/common'
 import { RequestUserDto } from 'src/user/dtos/request-user.dto'
 
-// Mock del modelo de Mongoose
 const mockUserModel = {
   find: jest.fn(),
   findById: jest.fn(),
