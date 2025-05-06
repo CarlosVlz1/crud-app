@@ -6,6 +6,7 @@ import { USER_MOCK } from '../../services/__fixtures__/common';
 const userServiceMock = {
   findAll: jest.fn(),
   findOne: jest.fn(),
+  find: jest.fn(),
   create: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
@@ -38,6 +39,13 @@ describe('UserController', () => {
     it('should be called findOne of the service', () => {
       controller.findOne(idMock);
       expect(userServiceMock.findOne).toHaveBeenCalledWith(idMock);
+    });
+  });
+
+  describe('find', () => {
+    it('should be called find of the service', () => {
+      controller.find(idMock);
+      expect(userServiceMock.find).toHaveBeenCalledWith(idMock);
     });
   });
 
