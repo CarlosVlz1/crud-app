@@ -1,25 +1,62 @@
-name: AI Summary
+name: AI Summary Manual
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize]
     branches:
       - develop
 
 jobs:
-  request-ai-summarize:
+  ai-summary:
     runs-on: ubuntu-latest
-    environment: DEV
-    if: github.base_ref == 'develop' && github.event.action == 'opened'
     steps:
-      - name: Checkout code
+      - name: Checkout PR code
         uses: actions/checkout@v3
 
-      - name: Request AI summarize Pull Request
+      - name: Get PR Diff
+        id: get_diff
+        run: |
+          echo "Getting PR diff..."
+          git fetch origin develop
+          git diff origin/develop...HEAD > pr.diff
+          head -c 12000 pr.diff > trimmed.diff  # Límite por tokens
+
+      - name: Call OpenAI API
+        id: openai
+        run: |
+          REQUEST_BODY=$(jq -n \
+            --arg content "$(cat trimmed.diff)" \
+            --arg system "You are an experienced software developer and technical writer. Answer only to the request, without any introductory or conclusion text." \
+            --arg prompt "Provide a one-line overview followed by concise bullet points of key changes, focusing on features, fixes, and breaking changes. Here's the diff:\n\n$content" \
+            '{
+              model: "gpt-3.5-turbo",
+              messages: [
+                {role: "system", content: $system},
+                {role: "user", content: $prompt}
+              ]
+            }')
+
+          RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+            -H "Authorization: Bearer ${{ secrets.OPEN_AI_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "$REQUEST_BODY")
+
+          SUMMARY=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+          echo "$SUMMARY" > comment.txt
+          echo "summary_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$SUMMARY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          openai_endpoint: ${{ secrets.OPEN_AI_ENDPOINT }}
-          openai_api_key: ${{ secrets.OPEN_AI_API_KEY }}
-          comment_prefix: '## 🤖 AI Summary'
-          system_role: 'You are an experienced software developer and technical writer. Answer only to the request, without any introductory or conclusion text.'
-          prompt: 'Provide a one-line overview followed by concise bullet points of key changes, focusing on features, fixes, and breaking changes.'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('comment.txt', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🤖 AI Summary\n\n${body}`
+            });
