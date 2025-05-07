@@ -57,6 +57,9 @@ describe('UserService', () => {
       const query = { name: 'John' }
       mockUserModel.find.mockResolvedValue(USERS_MOCK)
       const result = await service.find(query)
+      expect(result).toEqual(USERS_MOCK)
+      expect(mockUserModel.find).toHaveBeenCalledWith(query)
+      expect(mockUserModel.find).toHaveBeenCalledTimes(1)
     })
   })
 
