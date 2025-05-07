@@ -1,0 +1,26 @@
+name: AI Summary
+
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - develop
+
+jobs:
+  request-ai-summarize:
+    runs-on: ubuntu-latest
+    environment: DEV
+    if: github.base_ref == 'develop' && github.event.action == 'opened'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Request AI summarize Pull Request
+        uses: MigranteSF/request-ia-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          openai_endpoint: ${{ secrets.OPEN_AI_ENDPOINT }}
+          openai_api_key: ${{ secrets.OPEN_AI_API_KEY }}
+          comment_prefix: '## 🤖 AI Summary'
+          system_role: 'You are an experienced software developer and technical writer. Answer only to the request, without any introductory or conclusion text.'
+          prompt: 'Provide a one-line overview followed by concise bullet points of key changes, focusing on features, fixes, and breaking changes.'
