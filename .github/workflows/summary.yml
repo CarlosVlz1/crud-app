@@ -16,7 +16,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Request AI summarize Pull Request
-        uses: MigranteSF/request-ia-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           openai_endpoint: ${{ secrets.OPEN_AI_ENDPOINT }}
